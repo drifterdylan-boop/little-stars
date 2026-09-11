@@ -1,6 +1,13 @@
 export const KEY='little-stars:v1';
-export const ICONS=['📘','🔢','📖','✍️','🎹','🎨','🏃','🪥','🧹','🌱','🎁','🍦','🎬','🧸','🎡','🚲'];
+export const ICONS=['📘','🔢','📖','✍️','🎹','🎨','🏃','⚽️','🏊','🚲','🪥','🛁','🧼','🧹','🧺','🌱','💧','🥛','🍎','🥗','💊','😴','🛏️','⏰','👕','🎒','🤝','❤️','🎮','🧩','🎬','🎵','📺','🎁','🍦','🧸','🎡','🏕️','🏖️'];
 export function dayKey(date=new Date()){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;}
+export function monthBoard(year,month,completions){
+ if(!Number.isSafeInteger(year)||!Number.isSafeInteger(month)||month<0||month>11||!Array.isArray(completions))throw Error('月份信息无效。');
+ const daysInMonth=new Date(year,month+1,0).getDate(),prefix=(new Date(year,month,1).getDay()+6)%7,counts=new Map();
+ for(const c of completions){const d=new Date(c.day+'T12:00:00');if(d.getFullYear()===year&&d.getMonth()===month)counts.set(c.day,(counts.get(c.day)||0)+1);}
+ const days=Array.from({length:daysInMonth},(_,i)=>{const day=i+1,key=dayKey(new Date(year,month,day));return{day,key,stars:counts.get(key)||0};});
+ return{year,month,prefix,days,totalStars:days.reduce((n,d)=>n+d.stars,0),activeDays:days.filter(d=>d.stars>0).length};
+}
 export function uid(){return globalThis.crypto.randomUUID();}
 export function fresh(){return {version:1,tasks:[{id:uid(),name:'英语学习',icon:'📘',active:true},{id:uid(),name:'数学练习',icon:'🔢',active:true},{id:uid(),name:'语文阅读',icon:'📖',active:true}],rewards:[{id:uid(),name:'选一份喜欢的小点心',icon:'🍦',threshold:10,active:true},{id:uid(),name:'一次家庭电影之夜',icon:'🎬',threshold:30,active:true},{id:uid(),name:'一次期待的周末出游',icon:'🎡',threshold:60,active:true}],completions:[],claims:[]};}
 export function validate(s){
