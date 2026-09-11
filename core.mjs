@@ -49,3 +49,10 @@ export function saveItem(s,type,id,name,icon,threshold){
  const item={id:old?.id||uid(),name,icon,active:old?.active??true,...(type==='rewards'?{threshold}:{})};
  if(old)Object.assign(old,item);else s[type].push(item);return item.id;
 }
+export function deleteItem(s,type,id){
+ if(!['tasks','rewards'].includes(type))throw Error('类型无效。');
+ const index=s[type].findIndex(x=>x.id===id);if(index===-1)throw Error('记录不存在。');
+ const [item]=s[type].splice(index,1);
+ if(type==='tasks'){const before=s.completions.length;s.completions=s.completions.filter(c=>c.taskId!==id);return{name:item.name,removedStars:before-s.completions.length};}
+ s.claims=s.claims.filter(c=>c.rewardId!==id);return{name:item.name,removedStars:0};
+}

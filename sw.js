@@ -1,6 +1,6 @@
-const VERSION='1.2.0';
-const CACHE='little-stars-shell-v3';
-const ASSETS=['./','./index.html','./style.css?v=1.2.0','./app.js?v=1.2.0','./core.mjs?v=1.2.0','./icon.svg','./apple-touch-icon.png','./icons/icon-192.png','./icons/icon-512.png','./icons/maskable-512.png','./manifest.webmanifest'];
+const VERSION='1.3.0';
+const CACHE='little-stars-shell-v5';
+const ASSETS=['./','./index.html','./style.css?v=1.3.0','./app.js?v=1.3.0','./core.mjs?v=1.3.0','./icon.svg','./apple-touch-icon.png','./icons/icon-192.png','./icons/icon-512.png','./icons/maskable-512.png','./manifest.webmanifest'];
 const assetURLs=new Set(ASSETS.map(path=>new URL(path,self.registration.scope).href));
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS.map(url=>new Request(url,{cache:'reload'})))).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('little-stars-shell-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
