@@ -1,4 +1,4 @@
-import{KEY,ICONS,dayKey,monthBoard,fresh,validate,complete,cancelCompletion,claim,saveItem,deleteItem}from'./core.mjs?v=1.3.0';
+import{KEY,ICONS,dayKey,monthBoard,fresh,validate,complete,cancelCompletion,claim,saveItem,deleteItem}from'./core.mjs?v=1.3.1';
 const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let state,storageError=false,tab='tasks',editing=null,selectedIcon=ICONS[0],toastTimer,date=dayKey(),boardDate=new Date(new Date().getFullYear(),new Date().getMonth(),1);
 const PIN_KEY='little-stars:parent-pin',parentPin=()=>localStorage.getItem(PIN_KEY)||'1234';
@@ -58,7 +58,7 @@ try{state=read();if(localStorage.getItem(KEY)===null)write(state);}catch{storage
 render();window.addEventListener('storage',e=>{if(e.key===KEY)refresh();});document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});window.addEventListener('focus',refresh);setInterval(()=>{if(date!==dayKey())refresh();},15000);
 let offlineReady=false,offlineFailure='';
 function updateInstallStatus(){const installed=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;$('#installTitle').textContent=installed?'已经安装到主屏幕':'安装到 iPad';$('#installSteps').hidden=installed;$('#installApp').textContent=installed?'应用状态':'安装到 iPad';$('#offlineStatus').textContent=offlineReady?(navigator.onLine?'✓ 离线资源已准备好，可断网使用':'✓ 正在离线使用，打卡照常保存'):offlineFailure||'正在准备离线使用，请保持联网片刻。';}
-async function checkOffline(){if(!('serviceWorker'in navigator)){offlineFailure='当前浏览器不支持离线安装，请使用 iPad 的 Safari。';updateInstallStatus();return;}const worker=navigator.serviceWorker.controller;if(!worker)return;const channel=new MessageChannel();const timer=setTimeout(()=>channel.port1.close(),5000);channel.port1.onmessage=e=>{clearTimeout(timer);channel.port1.close();offlineReady=e.data?.version==='1.3.0'&&e.data?.ready===true;updateInstallStatus();};worker.postMessage({type:'OFFLINE_STATUS'},[channel.port2]);}
+async function checkOffline(){if(!('serviceWorker'in navigator)){offlineFailure='当前浏览器不支持离线安装，请使用 iPad 的 Safari。';updateInstallStatus();return;}const worker=navigator.serviceWorker.controller;if(!worker)return;const channel=new MessageChannel();const timer=setTimeout(()=>channel.port1.close(),5000);channel.port1.onmessage=e=>{clearTimeout(timer);channel.port1.close();offlineReady=e.data?.version==='1.3.1'&&e.data?.ready===true;updateInstallStatus();};worker.postMessage({type:'OFFLINE_STATUS'},[channel.port2]);}
 updateInstallStatus();
 window.addEventListener('online',()=>{updateInstallStatus();checkOffline();});window.addEventListener('offline',updateInstallStatus);
 if('serviceWorker'in navigator&&location.protocol!=='file:'){
